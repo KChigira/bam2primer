@@ -1,5 +1,5 @@
 use strict;
-use warnings;
+#use warnings;
 use utf8;
 
 my $line;

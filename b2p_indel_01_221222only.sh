@@ -54,55 +54,15 @@ cd $(dirname $0)
 
 #make log file
 LOG=${CURRENT}/${NAME}_log
-mkdir ${LOG}
 
-#make a index file of reference genome
-samtools faidx ${REF}
-picard CreateSequenceDictionary R=${REF}
-
-#Make VCF from BAM
-if [ -d ${CURRENT}/${NAME}_vcf_1st ]; then
-  echo "The result of same sample name exists."
-  usage
-fi
-mkdir ${CURRENT}/${NAME}_vcf_1st
-bash mkvcf_indel.sh ${REF} \
-                    ${BAM_1} \
-                    ${CURRENT}/${NAME}_vcf_1st \
-                    ${NAME_BAM_1} \
-                    ${LOG}/mkvcf_indel_1.log \
-                    none \
-                    &
-bash mkvcf_indel.sh ${REF} \
-                    ${BAM_2} \
-                    ${CURRENT}/${NAME}_vcf_1st \
-                    ${NAME_BAM_2} \
-                    ${LOG}/mkvcf_indel_2.log \
-                    none \
-                    &
-wait
-#
-if test $? -ne 0 ; then
-  echo "Haplotype calling was failed."
-  exit 1
-fi
-#
-bcftools merge -o ${CURRENT}/${NAME}_vcf_1st/${NAME}_merged_filtered_variants.vcf.gz \
-               -O z \
-               ${CURRENT}/${NAME}_vcf_1st/${NAME_BAM_1}_filtered_variants.vcf.gz \
-               ${CURRENT}/${NAME}_vcf_1st/${NAME_BAM_2}_filtered_variants.vcf.gz
-bcftools index ${CURRENT}/${NAME}_vcf_1st/${NAME}_merged_filtered_variants.vcf.gz
-#force calling the position where alleles exists.
-#To make genotype not "./." but "0/0"
-mkdir ${CURRENT}/${NAME}_vcf_2nd
-bash mkvcf_indel.sh ${REF} \
+bash mkvcf_indel_221222only.sh ${REF} \
                     ${BAM_1} \
                     ${CURRENT}/${NAME}_vcf_2nd \
                     ${NAME_BAM_1} \
                     ${LOG}/mkvcf_indel_3.log \
                     ${CURRENT}/${NAME}_vcf_1st/${NAME}_merged_filtered_variants.vcf.gz \
                     &
-bash mkvcf_indel.sh ${REF} \
+bash mkvcf_indel_221222only.sh ${REF} \
                     ${BAM_2} \
                     ${CURRENT}/${NAME}_vcf_2nd \
                     ${NAME_BAM_2} \

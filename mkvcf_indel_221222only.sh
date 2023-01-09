@@ -25,22 +25,6 @@ touch ${LOG}
 
 samtools index ${INPUT}
 
-if [ ${VCF} = none ]; then
-  gatk HaplotypeCaller \
-         -R ${REF} \
-         -I ${INPUT} \
-         -O ${OUTDIR}/${NAME}_raw_variants.vcf \
-         >> ${LOG}
-else
-  gatk IndexFeatureFile -I ${VCF}
-  gatk HaplotypeCaller \
-         -R ${REF} \
-         -I ${INPUT} \
-         -O ${OUTDIR}/${NAME}_raw_variants.vcf \
-         --alleles ${VCF} \
-         >> ${LOG}
-fi
-
 gatk SelectVariants \
        -R ${REF} \
        -V ${OUTDIR}/${NAME}_raw_variants.vcf \

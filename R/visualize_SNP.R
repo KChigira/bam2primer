@@ -20,8 +20,10 @@ for(i in 1:length(len_chr)){
   segments(i, 0, i, len_chr[i])
   data_select <- data[data[1]==chr_name[i], ]
   pos <- data_select[, 2]
-  for(j in 1:length(pos)){
-    segments(i-0.3, pos[j], i+0.3, pos[j])
+  if(length(pos) > 0){
+    for(j in 1:length(pos)){
+      segments(i-0.3, pos[j], i+0.3, pos[j])
+    }
   }
 }
 dev.off()
